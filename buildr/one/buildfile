@@ -2,6 +2,14 @@ repositories.remote << 'http://repo1.maven.org/maven2'
 
 VERSION_NUMBER = '1.0'
 
+STANDARD_SERVER_LIB = struct(
+    :servlet => "javax.servlet:servlet-api:jar:2.5"
+)
+
+JETTY = struct(
+  :jetty => "org.eclipse.jetty.aggregate:jetty-all:jar:7.0.2.v20100331"
+)
+
 define 'one' do
 
   project.version = VERSION_NUMBER
@@ -9,15 +17,26 @@ define 'one' do
   options.test = :all
 
   define 'library' do
+
     compile
     package :jar
     test.using :junit
+
   end
 
   define 'web' do
-    compile.with projects('library')
-    package(:war).with :libs => projects('library')
+
+    WEB_DEPENDENCY = struct(
+      :SERVLET => STANDARD_SERVER_LIB,
+      :SERVER => JETTY,
+      :LIBRARY => projects('library')
+    )
+
+    compile.with WEB_DEPENDENCY
+    package(:war).with :libs => WEB_DEPENDENCY
     test.using :junit
+    run.using :main => "web.server.OneServer"
+
   end
 
 end
