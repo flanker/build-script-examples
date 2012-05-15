@@ -15,8 +15,8 @@ define 'one' do
   end
 
   define 'web' do
-    compile
-    package :war
+    compile.with projects('library')
+    package(:war).with :libs => projects('library')
     test.using :junit
   end
 
