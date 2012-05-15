@@ -1,0 +1,23 @@
+repositories.remote << 'http://repo1.maven.org/maven2'
+
+VERSION_NUMBER = '1.0'
+
+define 'one' do
+
+  project.version = VERSION_NUMBER
+  compile.options.target = '1.6'
+  options.test = :all
+
+  define 'library' do
+    compile
+    package :jar
+    test.using :junit
+  end
+
+  define 'web' do
+    compile
+    package :war
+    test.using :junit
+  end
+
+end
